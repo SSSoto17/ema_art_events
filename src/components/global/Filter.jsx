@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+
 import {
   Select,
   SelectContent,
@@ -9,144 +9,95 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { usePathname } from "next/navigation";
+import Form from "next/form";
+import { startTransition, useActionState } from "react";
+import { filterData } from "./actions";
 
-const Filter = ({
-  //data
-  dataArtists = [],
-  dataTechniques = [],
-  dataLocations = [],
-  dataDates = [],
+export default function NewFilter({ data }) {
+  const [state, action, isPending] = useActionState(filterData, { active: [] });
 
-  //UseState
-  selectedTechniques,
-  selectedArtist,
-}) => {
-  console.log("Filter: artists: ", dataArtists, "techniques", dataTechniques);
-  const pathname = usePathname();
-  const isEventsPage = pathname?.startsWith("/events");
+  function handleFilter(value, category) {
+    const replaceFilter = state?.active?.filter(
+      (item) => !item.includes(category)
+    );
+    const data =
+      value === "all"
+        ? replaceFilter
+        : [...replaceFilter, `[${category}:${value}]`];
 
-  const uniqueTechniques = [
-    ...new Set(dataTechniques.map((t) => t.trim()).filter(Boolean)),
-  ];
-  const uniqueArtists = [
-    ...new Set(dataArtists.map((t) => t.trim()).filter(Boolean)),
-  ];
+    startTransition(action.bind(state, data));
+  }
 
-  const handleLocationChange = (value) => {
-    setSelectedLocation(value === "all" ? "" : value);
-  };
-
-  const handleDateChange = (value) => {
-    setSelectedDate(value === "all" ? "" : value);
-  };
-  const handleTechniquesChange = (value) => {
-    setSelectedTechniques(value === "all" ? "" : value);
-  };
-  const handleArtistChange = (value) => {
-    setSelectedArtist(value === "all" ? "" : value);
-  };
-
-  return isEventsPage ? (
+  return (
     <div className="flex flex-col gap-4 mb-8">
-      <Select
+      {/* <Select
         onValueChange={handleLocationChange}
         value={selectedLocation || "all"}
-      >
+        >
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Vælg lokation" />
+        <SelectValue placeholder="Vælg lokation" />
         </SelectTrigger>
         <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Lokationer</SelectLabel>
-            <SelectItem value="all">Alle lokationer</SelectItem>
+        <SelectGroup>
+        <SelectLabel>Lokationer</SelectLabel>
+        <SelectItem value="all">Alle lokationer</SelectItem>
             {locations.map((location) => {
-              const id = location?.id?.trim();
-              if (!id) return null;
-              return (
-                <SelectItem key={id} value={id}>
-                  {location.name || "Ukendt lokation"}
-                </SelectItem>
-              );
-            })}
+                const id = location?.id?.trim();
+                if (!id) return null;
+                return (
+                    <SelectItem key={id} value={id}>
+                    {location.name || "Ukendt lokation"}
+                    </SelectItem>
+                    );
+                    })}
           </SelectGroup>
         </SelectContent>
-      </Select>
-
-      <Select onValueChange={handleDateChange} value={selectedDate || "all"}>
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Vælg dato" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Datoer</SelectLabel>
-            <SelectItem value="all">Alle datoer</SelectItem>
-            {dates.map((date) => {
-              const trimmed = date?.trim();
-              if (!trimmed) return null;
-              return (
-                <SelectItem key={trimmed} value={trimmed}>
-                  {trimmed}
+      </Select> */}
+      {data.map(({ name, label, items }, id) => {
+        return (
+          <Select key={id} onValueChange={(e) => handleFilter(e, name)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue
+                placeholder={`Vælg ${label.singular.toLowerCase()}`}
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>{label.plural}</SelectLabel>
+                <SelectItem value="all">
+                  Alle {label.plural.toLowerCase()}
                 </SelectItem>
-              );
-            })}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </div>
-  ) : (
-    <div className="flex flex-col gap-4 mb-8">
-      {/* SMK Mulighederne */}
-      <Select
-        onValueChange={handleTechniquesChange}
-        value={selectedTechniques || "all"}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Vælg dato" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Techniques</SelectLabel>
-            <SelectItem value="all">Alle Techniques</SelectItem>
-            {uniqueTechniques.map((techniques) => {
-              const trimmed = techniques?.trim();
-              if (!trimmed) return null;
-
-              return (
-                <SelectItem key={trimmed} value={trimmed}>
-                  {trimmed}
-                </SelectItem>
-              );
-            })}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <Select
-        onValueChange={handleArtistChange}
-        value={selectedArtist || "all"}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Vælg dato" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Artists</SelectLabel>
-            <SelectItem value="all">Alle Artists</SelectItem>
-            {uniqueArtists.map((artist) => {
-              const trimmed = artist?.trim();
-              if (!trimmed) return null;
-
-              return (
-                <SelectItem key={trimmed} value={trimmed}>
-                  {trimmed}
-                </SelectItem>
-              );
-            })}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+                {items.map((item, id) => {
+                  if (isNaN(item))
+                    return (
+                      <SelectItem key={id} value={item}>
+                        {item}
+                      </SelectItem>
+                    );
+                })}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        );
+      })}
+      <ul className="grid grid-cols-3 gap-6">
+        {state?.data.length > 0 ? (
+          state?.data?.map(({ artist, titles, techniques }, id) => {
+            console.log(techniques);
+            return (
+              <li key={id} className="contents">
+                <article className="border p-6 row-span-3 grid grid-rows-subgrid">
+                  <h3>{titles[0].title}</h3>
+                  <p>{artist[0]}</p>
+                  <p>{techniques[0]}</p>
+                </article>
+              </li>
+            );
+          })
+        ) : (
+          <p className="col-span-full">No results matched your search.</p>
+        )}
+      </ul>
     </div>
   );
-};
-
-export default Filter;
+}

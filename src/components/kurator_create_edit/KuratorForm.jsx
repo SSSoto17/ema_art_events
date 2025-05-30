@@ -8,7 +8,7 @@ import { createEvent, updateEvent } from "@/lib/api";
 import Gallery from "./Gallery";
 import CustomButton from "@/components/global/CustomButton";
 import Step from "./Step";
-import Filter from "../global/Filter";
+import Filter from "../global/Filter.client";
 
 const KuratorForm = ({
   initialEventData,

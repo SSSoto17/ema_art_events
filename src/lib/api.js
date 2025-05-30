@@ -64,20 +64,25 @@ export async function getArtworkByEventID(objectNumber) {
 }
 
 // Til Kurator Filtering og Description til Singleview.
-export async function getSMKFilter() {
-  const datasSMK = await fetch(
-    "https://api.smk.dk/api/v1/art/search/?keys=*&offset=0&rows=3",
+export async function getSMKFilter(filter) {
+  console.log("TEST: ", filter);
+  const { items } = await fetch(
+    `https://api.smk.dk/api/v1/art/search/?keys=*${
+      filter && `&filters=${filter}`
+    }&filters=[has_image:true]&filters=[object_names:maleri]&offset=0&rows=100`,
     {
       headers: {
         "Content-Type": "application/json",
       },
     }
-  );
-  const dataSMK = await datasSMK.json();
-  const SMKData = dataSMK.items;
+  ).then((res) => res.json());
+  return items;
+}
 
-  const dataTechniques = SMKData.flatMap((item) => item.techniques || []);
-  const dataArtists = SMKData.flatMap((item) => item.artist || []);
+export async function getSMKFilterCat() {
+  const { facets } = await fetch(
+    "https://api.smk.dk/api/v1/art/search/?keys=*&filters=[has_image:true]&filters=[object_names:maleri]&facets=techniques&facets=artist"
+  ).then((res) => res.json());
 
-  return { dataTechniques, dataArtists };
+  return { facets };
 }
