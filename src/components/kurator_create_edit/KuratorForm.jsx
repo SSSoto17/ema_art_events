@@ -8,7 +8,8 @@ import { createEvent, updateEvent } from "@/lib/api";
 import Gallery from "./Gallery";
 import CustomButton from "@/components/global/CustomButton";
 import Step from "./Step";
-import Filter from "../global/Filter.client";
+import Filter from "../global/FilterOld";
+import NewFilter from "../global/Filter";
 
 const KuratorForm = ({
   initialEventData,
@@ -19,6 +20,7 @@ const KuratorForm = ({
   // Til Filter
   dataArtists,
   dataTechniques,
+  filterCategories,
 }) => {
   const router = useRouter();
   // const EventsDates = await getEventDates();
@@ -276,6 +278,7 @@ const KuratorForm = ({
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
           ></textarea>
         </div>
+        <NewFilter data={filterCategories} />
 
         <div className="border p-4 rounded-md">
           <Gallery
@@ -297,7 +300,7 @@ const KuratorForm = ({
           size="lg"
         />
       </form>
-      <aside>
+      {/* <aside>
         <Filter
           // data
           dataDates={eventsDates}
@@ -305,7 +308,8 @@ const KuratorForm = ({
           dataTechniques={dataTechniques}
           dataArtists={dataArtists}
         ></Filter>
-      </aside>
+        <NewFilter data={filterCategories} />
+      </aside> */}
     </>
   );
 };

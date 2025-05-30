@@ -2,7 +2,7 @@
 import CustomButton from "./CustomButton";
 import React, { useState } from "react";
 import EventItem from "@/components/global/EventItem";
-import Filter from "@/components/global/Filter.client";
+import Filter from "@/components/global/FilterOld";
 import { usePathname } from "next/navigation";
 
 const EventListWithFilter = ({

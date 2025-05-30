@@ -80,9 +80,24 @@ export async function getSMKFilter(filter) {
 }
 
 export async function getSMKFilterCat() {
-  const { facets } = await fetch(
+  const {
+    facets: { artist, techniques },
+  } = await fetch(
     "https://api.smk.dk/api/v1/art/search/?keys=*&filters=[has_image:true]&filters=[object_names:maleri]&facets=techniques&facets=artist"
   ).then((res) => res.json());
 
-  return { facets };
+  const categories = [
+    {
+      name: "artist",
+      label: { singular: "Kunstner", plural: "Kunstnere" },
+      items: artist.toSorted(),
+    },
+    {
+      name: "techniques",
+      label: { singular: "Teknik", plural: "Teknikker" },
+      items: techniques.toSorted(),
+    },
+  ];
+
+  return categories;
 }

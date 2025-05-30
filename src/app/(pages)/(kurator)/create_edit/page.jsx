@@ -97,21 +97,7 @@ export default async function Create_Edit({ searchParams }) {
     //   finalSmkDataForGallery.smk.length
     // );
 
-    const {
-      facets: { artist, techniques },
-    } = await getSMKFilterCat();
-    const categories = [
-      {
-        name: "artist",
-        label: { singular: "Kunstner", plural: "Kunstnere" },
-        items: artist.toSorted(),
-      },
-      {
-        name: "techniques",
-        label: { singular: "Teknik", plural: "Teknikker" },
-        items: techniques.toSorted(),
-      },
-    ];
+    const categories = await getSMKFilterCat();
 
     return (
       <>
@@ -124,8 +110,8 @@ export default async function Create_Edit({ searchParams }) {
           // dataTechniques={dataTechniques}
           eventsDates={eventsdates}
           eventsLocations={eventslocations}
+          filterCategories={categories}
         />
-        <NewFilter data={categories} />
       </>
     );
   } catch (error) {

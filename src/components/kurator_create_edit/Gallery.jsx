@@ -1,5 +1,5 @@
 "use client";
-import Filter from "../global/Filter.client";
+import Filter from "../global/FilterOld";
 import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 
