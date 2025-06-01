@@ -64,12 +64,11 @@ export async function getArtworkByEventID(objectNumber) {
 }
 
 // Til Kurator Filtering og Description til Singleview.
-export async function getSMKFilter(filter) {
-  console.log("TEST: ", filter);
+export async function getSMKFilter(filter, hasImg) {
   const { items } = await fetch(
     `https://api.smk.dk/api/v1/art/search/?keys=*${
-      filter && `&filters=${filter}`
-    }&filters=[has_image:true]&filters=[object_names:maleri]&offset=0&rows=100`,
+      hasImg ? "&filters=[has_image:true]" : ""
+    }${filter && `&filters=${filter}`}&offset=0&rows=100`,
     {
       headers: {
         "Content-Type": "application/json",

@@ -34,7 +34,6 @@ const KuratorForm = ({
   const {
     register,
     handleSubmit,
-
     setValue,
     watch,
     formState: { errors },
@@ -43,7 +42,6 @@ const KuratorForm = ({
       title: "",
       locationId: "",
       date: "",
-
       description: "",
       artworksId: [],
     },
@@ -186,131 +184,113 @@ const KuratorForm = ({
   };
 
   return (
-    <>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-4">
       <Step number="1" text="Dato og tid for event" />
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-4">
-        <h1 className="text-2xl font-bold mb-4">
-          {initialEventData ? "Rediger event" : "Opret nyt event"}
-        </h1>
-
-        <div>
-          <label
-            htmlFor="title"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Titel:
-          </label>
-          <input
-            type="text"
-            id="title"
-            {...register("title", { required: "Titel er påkrævet" })}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-          />
-          {errors.title && (
-            <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="locationId"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Lokation:
-          </label>
-          <select
-            id="locationId"
-            {...register("locationId", {
-              required: "Lokation er påkrævet",
-              valueAsNumber: true,
-            })}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-          >
-            <option value="">Vælg en lokation</option>
-            {Array.isArray(locations) && locations.length > 0 ? (
-              locations.map((loc) => (
-                <option key={loc.id} value={loc.id}>
-                  {loc.name} (Max billeder: {loc.maxArtworks})
-                </option>
-              ))
-            ) : (
-              <option disabled>
-                Indlæser lokationer eller ingen fundet...
-              </option>
-            )}
-          </select>
-          {errors.locationId && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.locationId.message}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="date"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Dato:
-          </label>
-          <input
-            type="date"
-            id="date"
-            {...register("date", { required: "Dato er påkrævet" })}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-          />
-          {errors.date && (
-            <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Beskrivelse:
-          </label>
-          <textarea
-            id="description"
-            {...register("description")}
-            rows="4"
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-          ></textarea>
-        </div>
-        <NewFilter data={filterCategories} />
-
-        <div className="border p-4 rounded-md">
-          <Gallery
-            smkdata={smk}
-            selectedImages={selectedImages}
-            handleImageSelect={handleImageSelect}
-            maxImages={currentMaxImages}
-            locationSelected={!!selectedLocation}
-            showSelectedImagesSection={false}
-          />
-          <input type="hidden" {...register("artworksId")} />
-        </div>
-
-        <CustomButton
-          type="submit"
-          text={initialEventData ? "Gem ændringer" : "Opret event"}
-          className="mt-6 w-fit"
-          variant="default"
-          size="lg"
+      <h1 className="text-2xl font-bold mb-4">
+        {initialEventData ? "Rediger event" : "Opret nyt event"}
+      </h1>
+      <div>
+        <label
+          htmlFor="title"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Titel:
+        </label>
+        <input
+          type="text"
+          id="title"
+          {...register("title", { required: "Titel er påkrævet" })}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
         />
-      </form>
-      {/* <aside>
-        <Filter
-          // data
-          dataDates={eventsDates}
-          dataLocations={eventsLocations}
-          dataTechniques={dataTechniques}
-          dataArtists={dataArtists}
-        ></Filter>
-        <NewFilter data={filterCategories} />
-      </aside> */}
-    </>
+        {errors.title && (
+          <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
+        )}
+      </div>
+      <div>
+        <label
+          htmlFor="locationId"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Lokation:
+        </label>
+        <select
+          id="locationId"
+          {...register("locationId", {
+            required: "Lokation er påkrævet",
+            valueAsNumber: true,
+          })}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+        >
+          <option value="">Vælg en lokation</option>
+          {Array.isArray(locations) && locations.length > 0 ? (
+            locations.map((loc) => (
+              <option key={loc.id} value={loc.id}>
+                {loc.name} (Max billeder: {loc.maxArtworks})
+              </option>
+            ))
+          ) : (
+            <option disabled>Indlæser lokationer eller ingen fundet...</option>
+          )}
+        </select>
+        {errors.locationId && (
+          <p className="mt-1 text-sm text-red-600">
+            {errors.locationId.message}
+          </p>
+        )}
+      </div>
+      <div>
+        <label
+          htmlFor="date"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Dato:
+        </label>
+        <input
+          type="date"
+          id="date"
+          {...register("date", { required: "Dato er påkrævet" })}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+        />
+        {errors.date && (
+          <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>
+        )}
+      </div>
+      <div>
+        <label
+          htmlFor="description"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Beskrivelse:
+        </label>
+        <textarea
+          id="description"
+          {...register("description")}
+          rows="4"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+        ></textarea>
+      </div>
+
+      <Step number="2" text="Vælg billeder fra galleriet">
+        <Gallery
+          smkdata={smk}
+          selectedImages={selectedImages}
+          handleImageSelect={handleImageSelect}
+          maxImages={currentMaxImages}
+          locationSelected={!!selectedLocation}
+          showSelectedImagesSection={false}
+          categories={filterCategories}
+        >
+          <input type="hidden" {...register("artworksId")} />
+        </Gallery>
+      </Step>
+      <CustomButton
+        type="submit"
+        text={initialEventData ? "Gem ændringer" : "Opret event"}
+        className="mt-6 w-fit"
+        variant="default"
+        size="lg"
+      />
+    </form>
   );
 };
 
