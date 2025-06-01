@@ -8,8 +8,6 @@ import { createEvent, updateEvent } from "@/lib/api";
 import Gallery from "./Gallery";
 import CustomButton from "@/components/global/CustomButton";
 import Step from "./Step";
-import Filter from "../global/FilterOld";
-import NewFilter from "../global/Filter";
 
 const KuratorForm = ({
   initialEventData,
@@ -18,8 +16,6 @@ const KuratorForm = ({
   eventsLocations,
   fetchedLocations,
   // Til Filter
-  dataArtists,
-  dataTechniques,
   filterCategories,
 }) => {
   const router = useRouter();
